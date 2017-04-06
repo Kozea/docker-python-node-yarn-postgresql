@@ -1,6 +1,16 @@
 FROM buildpack-deps:jessie
 
-##### PYTHON 3
+# ██████  ██    ██ ████████ ██   ██  ██████  ███    ██
+# ██   ██  ██  ██     ██    ██   ██ ██    ██ ████   ██
+# ██████    ████      ██    ███████ ██    ██ ██ ██  ██
+# ██         ██       ██    ██   ██ ██    ██ ██  ██ ██
+# ██         ██       ██    ██   ██  ██████  ██   ████
+
+# https://hub.docker.com/_/python/
+
+ENV PYTHON_VERSION 3.6.1
+ENV PYTHON_PIP_VERSION 9.0.1
+
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
@@ -15,11 +25,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		tk \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV GPG_KEY 97FC712E4C024BBEA48A61ED3A5CA953F73C700D
-ENV PYTHON_VERSION 3.5.2
+ENV GPG_KEY 0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 9.0.1
 
 RUN set -ex \
 	&& buildDeps=' \
@@ -78,7 +86,17 @@ RUN cd /usr/local/bin \
 	&& ln -s python3-config python-config
 
 
-##### Node
+# ███    ██  ██████  ██████  ███████
+# ████   ██ ██    ██ ██   ██ ██
+# ██ ██  ██ ██    ██ ██   ██ █████
+# ██  ██ ██ ██    ██ ██   ██ ██
+# ██   ████  ██████  ██████  ███████
+
+# https://hub.docker.com/_/node/
+
+
+ENV NODE_VERSION 7.8.0
+ENV YARN_VERSION 0.21.3
 
 RUN groupadd --gid 1000 node \
   && useradd --uid 1000 --gid node --shell /bin/bash --create-home node
@@ -86,20 +104,19 @@ RUN groupadd --gid 1000 node \
 # gpg keys listed at https://github.com/nodejs/node
 RUN set -ex \
   && for key in \
-    9554F04D7259F04124DE6B476D5A82AC7E37093B \
-    94AE36675C464D64BAFA68DD7434390BDBE9B9C5 \
-    0034A06D9D9B0064CE8ADF6BF1747F4AD2306D93 \
-    FD3A5288F042B6850C66B31F09FE44734EB7990E \
-    71DCFD284A79C3B38668286BC97EC7A07EDE3FC1 \
-    DD8F2338BAE7501E3DD5AC78C273792F7D83545D \
-    B9AE9905FFD7803F25714661B63B535A4C206CA9 \
-    C4F0DFFF4E8C1A8236409D08E73BC641CC11F4C8 \
+		9554F04D7259F04124DE6B476D5A82AC7E37093B \
+		94AE36675C464D64BAFA68DD7434390BDBE9B9C5 \
+		FD3A5288F042B6850C66B31F09FE44734EB7990E \
+		71DCFD284A79C3B38668286BC97EC7A07EDE3FC1 \
+		DD8F2338BAE7501E3DD5AC78C273792F7D83545D \
+		B9AE9905FFD7803F25714661B63B535A4C206CA9 \
+		C4F0DFFF4E8C1A8236409D08E73BC641CC11F4C8 \
+		56730D5401028683275BD23C23EFEFE93C4CFFFE \
   ; do \
     gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
   done
 
 ENV NPM_CONFIG_LOGLEVEL info
-ENV NODE_VERSION 7.2.0
 
 RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.xz" \
   && curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt.asc" \
@@ -109,15 +126,30 @@ RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-
   && rm "node-v$NODE_VERSION-linux-x64.tar.xz" SHASUMS256.txt.asc SHASUMS256.txt \
   && ln -s /usr/local/bin/node /usr/local/bin/nodejs
 
+	RUN set -ex \
+	  && for key in \
+	    6A010C5166006599AA17F08146C2130DFD2497F5 \
+	  ; do \
+	    gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
+	  done \
+	  && curl -fSL -o yarn.js "https://yarnpkg.com/downloads/$YARN_VERSION/yarn-legacy-$YARN_VERSION.js" \
+	  && curl -fSL -o yarn.js.asc "https://yarnpkg.com/downloads/$YARN_VERSION/yarn-legacy-$YARN_VERSION.js.asc" \
+	  && gpg --batch --verify yarn.js.asc yarn.js \
+	  && rm yarn.js.asc \
+	  && mv yarn.js /usr/local/bin/yarn \
+	  && chmod +x /usr/local/bin/yarn
 
-###### Yarn
 
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
-	&& echo "deb http://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
-  && apt-get update && apt-get install yarn
+# ██████   ██████  ███████ ████████  ██████  ██████  ███████ ███████
+# ██   ██ ██    ██ ██         ██    ██       ██   ██ ██      ██
+# ██████  ██    ██ ███████    ██    ██   ███ ██████  █████   ███████
+# ██      ██    ██      ██    ██    ██    ██ ██   ██ ██           ██
+# ██       ██████  ███████    ██     ██████  ██   ██ ███████ ███████
 
+# https://hub.docker.com/_/postgres/
 
-###### Postgres
+ENV PG_MAJOR 9.6
+ENV PG_VERSION 9.6.2-1.pgdg80+1
 
 # explicitly set user/group IDs
 RUN groupadd -r postgres --gid=999 && useradd -r -g postgres --uid=999 postgres
@@ -144,10 +176,21 @@ RUN apt-get update && apt-get install -y locales && rm -rf /var/lib/apt/lists/* 
 
 ENV LANG en_US.utf8
 
-RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
+RUN mkdir /docker-entrypoint-initdb.d
 
-ENV PG_MAJOR 9.6
-ENV PG_VERSION 9.6.1-1.pgdg80+1
+RUN set -ex; \
+# pub   4096R/ACCC4CF8 2011-10-13 [expires: 2019-07-02]
+#       Key fingerprint = B97B 0AFC AA1A 47F0 44F2  44A0 7FCC 7D46 ACCC 4CF8
+# uid                  PostgreSQL Debian Repository
+	key='B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8'; \
+	export GNUPGHOME="$(mktemp -d)"; \
+	gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
+	gpg --export "$key" > /etc/apt/trusted.gpg.d/postgres.gpg; \
+	rm -r "$GNUPGHOME"; \
+	apt-key list
+
+
+RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
 
 RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main' $PG_MAJOR > /etc/apt/sources.list.d/pgdg.list
 
@@ -163,12 +206,18 @@ RUN mv -v /usr/share/postgresql/$PG_MAJOR/postgresql.conf.sample /usr/share/post
 	&& ln -sv ../postgresql.conf.sample /usr/share/postgresql/$PG_MAJOR/ \
 	&& sed -ri "s!^#?(listen_addresses)\s*=\s*\S+.*!\1 = '*'!" /usr/share/postgresql/postgresql.conf.sample
 
-RUN mkdir -p /var/run/postgresql && chown -R postgres /var/run/postgresql
+RUN mkdir -p /var/run/postgresql && chown -R postgres:postgres /var/run/postgresql && chmod g+s /var/run/postgresql
 
 ENV PATH /usr/lib/postgresql/$PG_MAJOR/bin:$PATH
 
 
-###### Bonus multicorn
+
+# ███    ███ ██    ██ ██   ████████ ██  ██████  ██████  ██████  ███    ██
+# ████  ████ ██    ██ ██      ██    ██ ██      ██    ██ ██   ██ ████   ██
+# ██ ████ ██ ██    ██ ██      ██    ██ ██      ██    ██ ██████  ██ ██  ██
+# ██  ██  ██ ██    ██ ██      ██    ██ ██      ██    ██ ██   ██ ██  ██ ██
+# ██      ██  ██████  ███████ ██    ██  ██████  ██████  ██   ██ ██   ████
+
 
 ENV MULTICORN_VERSION 1.3.3
 
