@@ -1,4 +1,4 @@
-FROM buildpack-deps:jessie
+FROM buildpack-deps:stretch
 
 # ██████  ██    ██ ████████ ██   ██  ██████  ███    ██
 # ██   ██  ██  ██     ██    ██   ██ ██    ██ ████   ██
@@ -8,7 +8,7 @@ FROM buildpack-deps:jessie
 
 # https://hub.docker.com/_/python/
 
-ENV PYTHON_VERSION 3.6.1
+ENV PYTHON_VERSION 3.5.3
 ENV PYTHON_PIP_VERSION 9.0.1
 
 
@@ -25,12 +25,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		tk \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV GPG_KEY 0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
+ENV GPG_KEY 97FC712E4C024BBEA48A61ED3A5CA953F73C700D
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 
 RUN set -ex \
 	&& buildDeps=' \
+        dpkg-dev \
 		tcl-dev \
 		tk-dev \
 	' \
@@ -79,7 +80,6 @@ RUN set -ex \
 
 # make some useful symlinks that are expected to exist
 RUN cd /usr/local/bin \
-	&& { [ -e easy_install ] || ln -s easy_install-* easy_install; } \
 	&& ln -s idle3 idle \
 	&& ln -s pydoc3 pydoc \
 	&& ln -s python3 python \
@@ -95,8 +95,8 @@ RUN cd /usr/local/bin \
 # https://hub.docker.com/_/node/
 
 
-ENV NODE_VERSION 7.8.0
-ENV YARN_VERSION 0.21.3
+ENV NODE_VERSION 8.1.4
+ENV YARN_VERSION 0.24.6
 
 RUN groupadd --gid 1000 node \
   && useradd --uid 1000 --gid node --shell /bin/bash --create-home node
@@ -113,6 +113,8 @@ RUN set -ex \
 		C4F0DFFF4E8C1A8236409D08E73BC641CC11F4C8 \
 		56730D5401028683275BD23C23EFEFE93C4CFFFE \
   ; do \
+    gpg --keyserver pgp.mit.edu --recv-keys "$key" || \
+    gpg --keyserver keyserver.pgp.com --recv-keys "$key" || \
     gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
   done
 
@@ -130,6 +132,8 @@ RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-
 	  && for key in \
 	    6A010C5166006599AA17F08146C2130DFD2497F5 \
 	  ; do \
+        gpg --keyserver pgp.mit.edu --recv-keys "$key" || \
+        gpg --keyserver keyserver.pgp.com --recv-keys "$key" || \
 	    gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
 	  done \
 	  && curl -fSL -o yarn.js "https://yarnpkg.com/downloads/$YARN_VERSION/yarn-legacy-$YARN_VERSION.js" \
@@ -149,7 +153,7 @@ RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-
 # https://hub.docker.com/_/postgres/
 
 ENV PG_MAJOR 9.6
-ENV PG_VERSION 9.6.2-1.pgdg80+1
+ENV PG_VERSION 9.6.3-3
 
 # explicitly set user/group IDs
 RUN groupadd -r postgres --gid=999 && useradd -r -g postgres --uid=999 postgres
@@ -192,7 +196,7 @@ RUN set -ex; \
 
 RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
 
-RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main' $PG_MAJOR > /etc/apt/sources.list.d/pgdg.list
+RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main' $PG_MAJOR > /etc/apt/sources.list.d/pgdg.list
 
 RUN apt-get update \
 	&& apt-get install -y postgresql-server-dev-all postgresql-common \
