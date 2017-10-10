@@ -8,7 +8,7 @@ FROM buildpack-deps:stretch
 
 # https://hub.docker.com/_/python/
 
-ENV PYTHON_VERSION 3.6.2
+ENV PYTHON_VERSION 3.6.3
 ENV PYTHON_PIP_VERSION 9.0.1
 
 
@@ -152,8 +152,8 @@ RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-
 
 # https://hub.docker.com/_/postgres/
 
-ENV PG_MAJOR 9.6
-ENV PG_VERSION 9.6.4-0+deb9u1
+ENV PG_MAJOR 10
+ENV PG_VERSION 10.0-1.pgdg90+1
 
 # explicitly set user/group IDs
 RUN groupadd -r postgres --gid=999 && useradd -r -g postgres --uid=999 postgres
@@ -198,12 +198,19 @@ RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys B97B0AFCAA1A4
 
 RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main' $PG_MAJOR > /etc/apt/sources.list.d/pgdg.list
 
+# postgresql-contrib isn't already available for postgresql 10
+# RUN apt-get update \
+#	&& apt-get install -y postgresql-server-dev-all postgresql-common \
+#	&& apt-get install -y \
+#		postgresql-$PG_MAJOR=$PG_VERSION \
+#		postgresql-contrib-$PG_MAJOR=$PG_VERSION \
+#	&& rm -rf /var/lib/apt/lists/*
+
 RUN apt-get update \
 	&& apt-get install -y postgresql-server-dev-all postgresql-common \
-	&& apt-get install -y \
-		postgresql-$PG_MAJOR=$PG_VERSION \
-		postgresql-contrib-$PG_MAJOR=$PG_VERSION \
+	&& apt-get install -y postgresql-$PG_MAJOR=$PG_VERSION \
 	&& rm -rf /var/lib/apt/lists/*
+
 
 # make the sample config easier to munge (and "correct by default")
 RUN mv -v /usr/share/postgresql/$PG_MAJOR/postgresql.conf.sample /usr/share/postgresql/ \
@@ -226,11 +233,11 @@ ENV PATH /usr/lib/postgresql/$PG_MAJOR/bin:$PATH
 ENV MULTICORN_VERSION 1.3.3
 
 RUN apt-get update && apt-get install -y --no-install-recommends unzip \
-		&& curl -SLO "http://api.pgxn.org/dist/multicorn/$MULTICORN_VERSION/multicorn-$MULTICORN_VERSION.zip" \
+		&& curl -SLO "https://github.com/Kozea/Multicorn/archive/master.zip" \
 		&& mkdir -p /usr/src/multicorn \
-		&& unzip multicorn-$MULTICORN_VERSION -d /usr/src/multicorn \
-		&& rm -fr multicorn-$MULTICORN_VERSION.zip \
-		&& cd /usr/src/multicorn/multicorn-$MULTICORN_VERSION \
+		&& unzip master.zip -d /usr/src/multicorn \
+		&& rm -fr master.zip \
+		&& cd /usr/src/multicorn/Multicorn-master \
 		&& env PYTHON_OVERRIDE=/usr/local/bin/python make \
 		&& env PYTHON_OVERRIDE=/usr/local/bin/python make install \
 		&& rm -fr /usr/src/multicorn \
