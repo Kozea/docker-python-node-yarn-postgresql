@@ -95,7 +95,7 @@ RUN cd /usr/local/bin \
 # https://hub.docker.com/_/node/
 
 
-ENV NODE_VERSION 9.7.1
+ENV NODE_VERSION 9.8.0
 ENV YARN_VERSION 1.5.1
 
 RUN groupadd --gid 1000 node \
