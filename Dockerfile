@@ -8,8 +8,8 @@ FROM buildpack-deps:stretch
 
 # https://hub.docker.com/_/python/
 
-ENV PYTHON_VERSION 3.6.4
-ENV PYTHON_PIP_VERSION 9.0.1
+ENV PYTHON_VERSION 3.7.0b2
+ENV PYTHON_PIP_VERSION 9.0.2
 
 
 # ensure local python is preferred over distribution python
@@ -230,7 +230,9 @@ ENV PATH /usr/lib/postgresql/$PG_MAJOR/bin:$PATH
 # ██      ██  ██████  ███████ ██    ██  ██████  ██████  ██   ██ ██   ████
 
 
-ENV MULTICORN_VERSION 1.3.3
+ENV MULTICORN_VERSION 1.3.4
+
+RUN pip install --upgrade setuptools
 
 RUN apt-get update && apt-get install -y --no-install-recommends unzip \
 		&& curl -SLO "https://github.com/Kozea/Multicorn/archive/master.zip" \
