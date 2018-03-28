@@ -9,7 +9,7 @@ FROM buildpack-deps:stretch
 # https://hub.docker.com/_/python/
 
 ENV PYTHON_VERSION 3.6.4
-ENV PYTHON_PIP_VERSION 9.0.1
+ENV PYTHON_PIP_VERSION 9.0.3
 
 
 # ensure local python is preferred over distribution python
@@ -84,6 +84,8 @@ RUN cd /usr/local/bin \
 	&& ln -s pydoc3 pydoc \
 	&& ln -s python3 python \
 	&& ln -s python3-config python-config
+
+RUN pip install pipenv
 
 
 # ███    ██  ██████  ██████  ███████
