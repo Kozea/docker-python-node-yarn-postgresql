@@ -8,7 +8,7 @@ FROM buildpack-deps:stretch
 
 # https://hub.docker.com/_/python/
 
-ENV PYTHON_VERSION 3.7.0b2
+ENV PYTHON_VERSION 3.6.4
 ENV PYTHON_PIP_VERSION 9.0.3
 
 
