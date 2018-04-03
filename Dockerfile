@@ -97,7 +97,7 @@ RUN pip install pipenv
 # https://hub.docker.com/_/node/
 
 
-ENV NODE_VERSION 9.9.0
+ENV NODE_VERSION 9.10.1
 ENV YARN_VERSION 1.5.1
 
 RUN groupadd --gid 1000 node \
