@@ -8,7 +8,7 @@ FROM buildpack-deps:stretch
 
 # https://hub.docker.com/_/python/
 
-ENV PYTHON_VERSION 3.6.4
+ENV PYTHON_VERSION 3.6.5
 ENV PYTHON_PIP_VERSION 9.0.3
 
 
@@ -97,7 +97,7 @@ RUN pip install pipenv
 # https://hub.docker.com/_/node/
 
 
-ENV NODE_VERSION 9.10.1
+ENV NODE_VERSION 9.11.1
 ENV YARN_VERSION 1.5.1
 
 RUN groupadd --gid 1000 node \
