@@ -9,7 +9,7 @@ FROM buildpack-deps:stretch
 # https://hub.docker.com/_/python/
 
 ENV PYTHON_VERSION 3.7.0b3
-ENV PYTHON_PIP_VERSION 9.0.3
+ENV PYTHON_PIP_VERSION 10.0.1
 
 
 # ensure local python is preferred over distribution python
