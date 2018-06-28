@@ -97,7 +97,7 @@ RUN pip install pipenv
 # https://hub.docker.com/_/node/
 
 
-ENV NODE_VERSION 10.4.1
+ENV NODE_VERSION 10.5.0
 ENV YARN_VERSION 1.7.0
 
 RUN groupadd --gid 1000 node \
@@ -114,6 +114,7 @@ RUN set -ex \
     		B9AE9905FFD7803F25714661B63B535A4C206CA9 \
     		56730D5401028683275BD23C23EFEFE93C4CFFFE \
 		77984A986EBC2AA786BC0F66B01FBB92821C587A \
+		8FCCA13FEF1D0C2E91008E09770F7A9A5AE15600 \
   ; do \
     gpg --keyserver pgp.mit.edu --recv-keys "$key" || \
     gpg --keyserver keyserver.pgp.com --recv-keys "$key" || \
