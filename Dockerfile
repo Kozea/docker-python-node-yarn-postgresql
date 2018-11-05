@@ -97,7 +97,7 @@ RUN pip install pipenv
 # https://hub.docker.com/_/node/
 
 
-ENV NODE_VERSION 10.12.0
+ENV NODE_VERSION 10.13.0
 ENV YARN_VERSION 1.10.1
 
 RUN groupadd --gid 1000 node \
@@ -164,7 +164,7 @@ RUN groupadd -r postgres --gid=999 && useradd -r -g postgres --uid=999 postgres
 # grab gosu for easy step-down from root
 ENV GOSU_VERSION 1.10
 RUN set -x \
-	&& apt-get update && apt-get install -y --no-install-recommends ca-certificates wget && rm -rf /var/lib/apt/lists/* \
+	&& apt-get update && apt-get install -y --no-install-recommends --allow-unauthenticated ca-certificates wget && rm -rf /var/lib/apt/lists/* \
 	&& wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture)" \
 	&& wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture).asc" \
 	&& export GNUPGHOME="$(mktemp -d)" \
@@ -175,7 +175,7 @@ RUN set -x \
 	&& gosu nobody true
 
 # make the "en_US.UTF-8" locale so postgres will be utf-8 enabled by default
-RUN apt-get update && apt-get install -y locales && rm -rf /var/lib/apt/lists/* \
+RUN apt-get update && apt-get install -y --allow-unauthenticated locales && rm -rf /var/lib/apt/lists/* \
 	&& localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
 	&& localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US \
 	&& localedef -i fr_FR -c -f UTF-8 -A /usr/share/locale/locale.alias fr_FR.UTF-8 \
@@ -210,8 +210,8 @@ RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main' $PG_MA
 #	&& rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update \
-	&& apt-get install -y postgresql-server-dev-all postgresql-common \
-	&& apt-get install -y postgresql-$PG_MAJOR=$PG_VERSION \
+	&& apt-get install -y --allow-unauthenticated postgresql-server-dev-all postgresql-common \
+	&& apt-get install -y --allow-unauthenticated postgresql-$PG_MAJOR=$PG_VERSION \
 	&& rm -rf /var/lib/apt/lists/*
 
 
@@ -237,7 +237,7 @@ ENV MULTICORN_VERSION 1.3.4
 
 # RUN pip install --upgrade setuptools
 
-RUN apt-get update && apt-get install -y --no-install-recommends unzip \
+RUN apt-get update && apt-get install -y --no-install-recommends --allow-unauthenticated unzip \
 		&& curl -SLO "https://github.com/Kozea/Multicorn/archive/master.zip" \
 		&& mkdir -p /usr/src/multicorn \
 		&& unzip master.zip -d /usr/src/multicorn \
