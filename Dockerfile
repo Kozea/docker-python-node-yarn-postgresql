@@ -97,7 +97,7 @@ RUN pip install pipenv
 # https://hub.docker.com/_/node/
 
 
-ENV NODE_VERSION 11.5.0
+ENV NODE_VERSION 11.6.0
 ENV YARN_VERSION 1.12.3
 
 RUN groupadd --gid 1000 node \
@@ -163,7 +163,7 @@ ENV PG_VERSION 10.6-1.pgdg90+1
 RUN groupadd -r postgres --gid=999 && useradd -r -g postgres --uid=999 postgres
 
 # grab gosu for easy step-down from root
-ENV GOSU_VERSION 1.10
+ENV GOSU_VERSION 1.11
 RUN set -x \
 	&& apt-get update && apt-get install -y --no-install-recommends ca-certificates wget && rm -rf /var/lib/apt/lists/* \
 	&& wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture)" \
