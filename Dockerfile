@@ -9,7 +9,7 @@ FROM buildpack-deps:stretch
 # https://hub.docker.com/_/python/
 
 ENV PYTHON_VERSION 3.6.8
-ENV PYTHON_PIP_VERSION 19.0.1
+ENV PYTHON_PIP_VERSION 19.0.2
 
 
 # ensure local python is preferred over distribution python
@@ -157,7 +157,7 @@ RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-
 # https://hub.docker.com/_/postgres/
 
 ENV PG_MAJOR 10
-ENV PG_VERSION 10.6-1.pgdg90+1
+ENV PG_VERSION 10.7-1.pgdg90+1
 
 # explicitly set user/group IDs
 RUN groupadd -r postgres --gid=999 && useradd -r -g postgres --uid=999 postgres
