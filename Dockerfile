@@ -97,8 +97,8 @@ RUN pip install pipenv
 # https://hub.docker.com/_/node/
 
 
-ENV NODE_VERSION 12.6.0
-ENV YARN_VERSION 1.16.0
+ENV NODE_VERSION 12.7.0
+ENV YARN_VERSION 1.17.3
 
 RUN groupadd --gid 1000 node \
   && useradd --uid 1000 --gid node --shell /bin/bash --create-home node
