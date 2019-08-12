@@ -97,7 +97,7 @@ RUN pip install pipenv
 # https://hub.docker.com/_/node/
 
 
-ENV NODE_VERSION 12.7.0
+ENV NODE_VERSION 12.8.0
 ENV YARN_VERSION 1.17.3
 
 RUN groupadd --gid 1000 node \
@@ -158,7 +158,7 @@ RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-
 # https://hub.docker.com/_/postgres/
 
 ENV PG_MAJOR 10
-ENV PG_VERSION 10.9-1.pgdg90+1
+ENV PG_VERSION 10.10-1.pgdg90+1
 
 # explicitly set user/group IDs
 RUN groupadd -r postgres --gid=999 && useradd -r -g postgres --uid=999 postgres
