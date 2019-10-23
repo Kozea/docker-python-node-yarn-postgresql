@@ -9,7 +9,7 @@ FROM buildpack-deps:stretch
 # https://hub.docker.com/_/python/
 
 ENV PYTHON_VERSION 3.6.9
-ENV PYTHON_PIP_VERSION 19.3
+ENV PYTHON_PIP_VERSION 19.3.1
 
 
 # ensure local python is preferred over distribution python
@@ -97,7 +97,7 @@ RUN pip install pipenv
 # https://hub.docker.com/_/node/
 
 
-ENV NODE_VERSION 12.12.0
+ENV NODE_VERSION 13.0.0
 ENV YARN_VERSION 1.19.1
 
 RUN groupadd --gid 1000 node \
