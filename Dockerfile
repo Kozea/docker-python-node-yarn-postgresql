@@ -85,8 +85,6 @@ RUN cd /usr/local/bin \
 	&& ln -s python3 python \
 	&& ln -s python3-config python-config
 
-RUN pip install pipenv
-
 
 # ███    ██  ██████  ██████  ███████
 # ████   ██ ██    ██ ██   ██ ██
@@ -252,8 +250,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends unzip \
 		&& apt-get purge -y --auto-remove unzip
 
 
-###### Bonus virtualenv and lxml/docutils
-RUN pip install virtualenv lxml docutils
-
+###### Bonus virtualenv, lxml/docutils and pipenv
+RUN pip install "virtualenv<20.0.0" lxml docutils pipenv
 
 CMD ["bash"]
