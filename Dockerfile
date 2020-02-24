@@ -95,8 +95,8 @@ RUN cd /usr/local/bin \
 # https://hub.docker.com/_/node/
 
 
-ENV NODE_VERSION 13.8.0
-ENV YARN_VERSION 1.21.1
+ENV NODE_VERSION 13.9.0
+ENV YARN_VERSION 1.22.0
 
 RUN groupadd --gid 1000 node \
   && useradd --uid 1000 --gid node --shell /bin/bash --create-home node
@@ -156,7 +156,7 @@ RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-
 # https://hub.docker.com/_/postgres/
 
 ENV PG_MAJOR 12
-ENV PG_VERSION 12.1-1.pgdg100+1
+ENV PG_VERSION 12.2-1.pgdg100+1
 
 # explicitly set user/group IDs
 RUN groupadd -r postgres --gid=999 && useradd -r -g postgres --uid=999 postgres
