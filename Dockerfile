@@ -8,7 +8,7 @@ FROM buildpack-deps:buster
 
 # https://hub.docker.com/_/python/
 
-ENV PYTHON_VERSION 3.7.6
+ENV PYTHON_VERSION 3.7.7
 ENV PYTHON_PIP_VERSION 20.0.2
 
 
@@ -95,8 +95,8 @@ RUN cd /usr/local/bin \
 # https://hub.docker.com/_/node/
 
 
-ENV NODE_VERSION 13.10.1
-ENV YARN_VERSION 1.22.0
+ENV NODE_VERSION 13.12.0
+ENV YARN_VERSION 1.22.4
 
 RUN groupadd --gid 1000 node \
   && useradd --uid 1000 --gid node --shell /bin/bash --create-home node
@@ -238,7 +238,7 @@ ENV MULTICORN_VERSION 1.3.4
 # RUN pip install --upgrade setuptools
 
 RUN apt-get update && apt-get install -y --no-install-recommends unzip \
-		&& curl -SLO "https://github.com/Kozea/Multicorn/archive/master.zip" \
+		&& curl -SLO "https://github.com/Segfault-Inc/Multicorn/archive/master.zip" \
 		&& mkdir -p /usr/src/multicorn \
 		&& unzip master.zip -d /usr/src/multicorn \
 		&& rm -fr master.zip \
