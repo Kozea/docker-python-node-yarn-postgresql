@@ -9,7 +9,7 @@ FROM buildpack-deps:buster
 # https://hub.docker.com/_/python/
 
 ENV PYTHON_VERSION 3.7.7
-ENV PYTHON_PIP_VERSION 20.0.2
+ENV PYTHON_PIP_VERSION 20.1.1
 
 
 # ensure local python is preferred over distribution python
@@ -95,7 +95,7 @@ RUN cd /usr/local/bin \
 # https://hub.docker.com/_/node/
 
 
-ENV NODE_VERSION 14.2.0
+ENV NODE_VERSION 14.3.0
 ENV YARN_VERSION 1.22.4
 
 RUN groupadd --gid 1000 node \
