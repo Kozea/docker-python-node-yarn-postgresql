@@ -8,7 +8,7 @@ FROM buildpack-deps:buster
 
 # https://hub.docker.com/_/python/
 
-ENV PYTHON_VERSION 3.7.9
+ENV PYTHON_VERSION 3.8.6
 ENV PYTHON_PIP_VERSION 20.2.3
 
 
@@ -25,8 +25,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		tk \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV GPG_KEY 0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
-
+ENV GPG_KEY E3FF2839C048B25C084DEBE9B26995E310250568
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 
 RUN set -ex \
