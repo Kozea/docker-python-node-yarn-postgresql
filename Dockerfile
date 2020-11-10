@@ -247,6 +247,45 @@ RUN apt-get update && apt-get install -y --no-install-recommends unzip \
 		&& cd \
 		&& apt-get purge -y --auto-remove unzip
 
+#  ██████ ██    ██ ██████  ██████  ███████ ███████ ███████
+# ██       ██  ██  ██   ██ ██   ██ ██      ██      ██
+# ██        ████   ██████  ██████  █████   ███████ ███████
+# ██         ██    ██      ██   ██ ██           ██      ██
+#  ██████    ██    ██      ██   ██ ███████ ███████ ███████
+
+# https://hub.docker.com/u/cypress
+
+# Install Cypress dependencies
+RUN apt-get update && \
+  apt-get install -y \
+    libgbm1 \
+    libgtk2.0-0 \
+    libnotify-dev \
+    libgconf-2-4 \
+    libnss3 \
+    libxss1 \
+    libasound2 \
+    xvfb
+
+# Install Cypress globally
+RUN npm install --silent --global --unsafe-perm cypress
+
+# Install Chrome
+ARG CHROME_VERSION
+ENV CHROME_VERSION=$CHROME_VERSION
+RUN wget --no-verbose -O /usr/src/google-chrome-stable_current_amd64.deb "http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_${CHROME_VERSION}-1_amd64.deb" && \
+  dpkg -i /usr/src/google-chrome-stable_current_amd64.deb ; \
+  apt-get install -f -y && \
+  rm -f /usr/src/google-chrome-stable_current_amd64.deb
+
+# Install Firefox
+ARG FIREFOX_VERSION
+ENV FIREFOX_VERSION=$FIREFOX_VERSION
+RUN wget --no-verbose -O /tmp/firefox.tar.bz2 \
+  https://download-installer.cdn.mozilla.net/pub/firefox/releases/$FIREFOX_VERSION/linux-x86_64/en-US/firefox-$FIREFOX_VERSION.tar.bz2 \
+  && tar -C /opt -xjf /tmp/firefox.tar.bz2 \
+  && rm /tmp/firefox.tar.bz2 \
+  && ln -fs /opt/firefox/firefox /usr/bin/firefox
 
 ###### Bonus virtualenv, lxml/docutils and pipenv
 RUN pip install "virtualenv<20.0.0" lxml docutils pipenv
