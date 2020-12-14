@@ -9,7 +9,7 @@ FROM buildpack-deps:buster
 # https://hub.docker.com/_/python/
 
 ENV PYTHON_VERSION 3.8.6
-ENV PYTHON_PIP_VERSION 20.2.4
+ENV PYTHON_PIP_VERSION 20.3.1
 
 
 # ensure local python is preferred over distribution python
@@ -94,7 +94,7 @@ RUN cd /usr/local/bin \
 # https://hub.docker.com/_/node/
 
 
-ENV NODE_VERSION 15.3.0
+ENV NODE_VERSION 15.4.0
 ENV YARN_VERSION 1.22.5
 
 RUN groupadd --gid 1000 node \
@@ -103,8 +103,9 @@ RUN groupadd --gid 1000 node \
 # gpg keys listed at https://github.com/nodejs/node
 RUN set -ex \
   && for key in \
-  	4ED778F539E3634C779C87C6D7062848A1AB005C \
+    4ED778F539E3634C779C87C6D7062848A1AB005C \
     94AE36675C464D64BAFA68DD7434390BDBE9B9C5 \
+    1C050899334244A8AF75E53792EF661D867B9DFA \
     71DCFD284A79C3B38668286BC97EC7A07EDE3FC1 \
     8FCCA13FEF1D0C2E91008E09770F7A9A5AE15600 \
     C4F0DFFF4E8C1A8236409D08E73BC641CC11F4C8 \
@@ -114,9 +115,9 @@ RUN set -ex \
     108F52B48DB57BB0CC439B2997B01419BD92F80A \
     B9E2F5981AA6E0CD28160D9FF13993A75599653C \
   ; do \
-    gpg --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" || \
-    gpg --keyserver hkp://ipv4.pool.sks-keyservers.net --recv-keys "$key" || \
-    gpg --keyserver hkp://pgp.mit.edu:80 --recv-keys "$key"; \
+    gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" || \
+    gpg --batch --keyserver hkp://ipv4.pool.sks-keyservers.net --recv-keys "$key" || \
+    gpg --batch --keyserver hkp://pgp.mit.edu:80 --recv-keys "$key" ; \
   done
 
 ENV NPM_CONFIG_LOGLEVEL info
