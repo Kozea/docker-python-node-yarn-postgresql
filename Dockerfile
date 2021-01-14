@@ -252,4 +252,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends unzip \
 ###### Bonus virtualenv, lxml/docutils and pipenv
 RUN pip install "virtualenv<20.0.0" lxml docutils pipenv
 
-CMD ["bash"]
+###### Postgresql settings for local run
+
+RUN /bin/bash -c "echo -e 'local all hydra_secure md5\nlocal all hydra_test_secure md5\nlocal all all trust\nhost all hydra_secure 127.0.0.1/32 md5\nhost all hydra_test_secure 127.0.0.1/32 md5\nhost all all 172.17.0.1/32 trust\nhost all hydra_secure ::1/128 md5\nhost all hydra_test_secure ::1/128 md5\nhost all all ::1/128 trust\n' > /etc/postgresql/12/main/pg_hba.conf"
+
+RUN sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/" /etc/postgresql/12/main/postgresql.conf
+
+CMD ["/bin/sh", "-c", "/etc/init.d/postgresql start; cat"]
