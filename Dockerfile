@@ -8,7 +8,7 @@ FROM buildpack-deps:buster
 
 # https://hub.docker.com/_/python/
 
-ENV PYTHON_VERSION 3.8.7
+ENV PYTHON_VERSION 3.8.8
 ENV PYTHON_PIP_VERSION 21.0.1
 
 
@@ -94,7 +94,7 @@ RUN cd /usr/local/bin \
 # https://hub.docker.com/_/node/
 
 
-ENV NODE_VERSION 15.8.0
+ENV NODE_VERSION 15.11.0
 ENV YARN_VERSION 1.22.5
 
 RUN groupadd --gid 1000 node \
