@@ -8,7 +8,7 @@ FROM buildpack-deps:buster
 
 # https://hub.docker.com/_/python/
 
-ENV PYTHON_VERSION 3.8.11
+ENV PYTHON_VERSION 3.7.11
 ENV PYTHON_PIP_VERSION 21.2.1
 
 
@@ -25,7 +25,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		tk \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV GPG_KEY E3FF2839C048B25C084DEBE9B26995E310250568
+ENV GPG_KEY 0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 
 RUN set -ex \
@@ -133,9 +133,8 @@ RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-
 	  && for key in \
 	    6A010C5166006599AA17F08146C2130DFD2497F5 \
 	  ; do \
-        	gpg --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" || \
-        	gpg --keyserver hkp://ipv4.pool.sks-keyservers.net --recv-keys "$key" || \
-		gpg --keyserver hkp://pgp.mit.edu:80 --recv-keys "$key"; \
+            gpg --keyserver hkps://keys.openpgp.org --recv-keys "$key" || \
+            gpg --keyserver keyserver.ubuntu.com --recv-keys "$key" ; \
 	  done \
 	  && curl -fSL -o yarn.js "https://yarnpkg.com/downloads/$YARN_VERSION/yarn-legacy-$YARN_VERSION.js" \
 	  && curl -fSL -o yarn.js.asc "https://yarnpkg.com/downloads/$YARN_VERSION/yarn-legacy-$YARN_VERSION.js.asc" \
