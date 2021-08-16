@@ -9,7 +9,7 @@ FROM buildpack-deps:buster
 # https://hub.docker.com/_/python/
 
 ENV PYTHON_VERSION 3.7.11
-ENV PYTHON_PIP_VERSION 21.2.1
+ENV PYTHON_PIP_VERSION 21.2.4
 
 
 # ensure local python is preferred over distribution python
@@ -94,7 +94,7 @@ RUN cd /usr/local/bin \
 # https://hub.docker.com/_/node/
 
 
-ENV NODE_VERSION 16.5.0
+ENV NODE_VERSION 16.6.2
 ENV YARN_VERSION 1.22.5
 
 RUN groupadd --gid 1000 node \
@@ -153,7 +153,7 @@ RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-
 # https://hub.docker.com/_/postgres/
 
 ENV PG_MAJOR 12
-ENV PG_VERSION 12.7-1.pgdg100+1
+ENV PG_VERSION 12.8-1.pgdg100+1
 
 # explicitly set user/group IDs
 RUN groupadd -r postgres --gid=999 && useradd -r -g postgres --uid=999 postgres
