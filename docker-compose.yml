@@ -1,0 +1,35 @@
+version: "3.9"
+services:
+  python:
+    image: "kozea/python:hydra-psql"
+    build:
+      context: .
+      dockerfile: python.Dockerfile
+  node:
+    image: "kozea/node:hydra-psql"
+    build:
+      context: .
+      dockerfile: node.Dockerfile
+    image: postgres
+  psql:
+    image: "kozea/psql:hydra-psql"
+    build:
+      context: .
+      dockerfile: postgres.Dockerfile
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      # POSTGRES_PASSWORD: postgres
+    volumes:
+      - "psql-data:/var/lib/postgresql/data"
+  pgadmin4:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: password
+    ports:
+      - 2345:80
+
+volumes:
+  psql-data:
