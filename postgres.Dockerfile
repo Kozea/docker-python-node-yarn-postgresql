@@ -117,4 +117,5 @@ COPY ./config/postgresql.conf /etc/postgresql/12/main
 
 # RUN sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/" /etc/postgresql/12/main/postgresql.conf
 
-CMD ["/bin/sh", "-c", "/etc/init.d/postgresql start; cat"]
+CMD ["/bin/sh", "-c", "/etc/init.d/postgresql start; tail -f /var/log/postgresql/postgresql-12-main.log"]
+
