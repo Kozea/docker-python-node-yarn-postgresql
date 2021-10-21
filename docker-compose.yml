@@ -10,7 +10,6 @@ services:
     build:
       context: .
       dockerfile: node.Dockerfile
-    image: postgres
   psql:
     image: "kozea/psql:hydra-psql"
     build:
