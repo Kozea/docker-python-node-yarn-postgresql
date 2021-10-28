@@ -8,7 +8,7 @@ FROM buildpack-deps:buster
 
 # https://hub.docker.com/_/python/
 
-ENV PYTHON_VERSION 3.8.11
+ENV PYTHON_VERSION 3.8.12
 ENV PYTHON_PIP_VERSION 21.2.4
 
 
@@ -94,8 +94,8 @@ RUN cd /usr/local/bin \
 # https://hub.docker.com/_/node/
 
 
-ENV NODE_VERSION 16.6.2
-ENV YARN_VERSION 1.22.5
+ENV NODE_VERSION 16.13.0
+ENV YARN_VERSION 1.22.15
 
 RUN groupadd --gid 1000 node \
   && useradd --uid 1000 --gid node --shell /bin/bash --create-home node
