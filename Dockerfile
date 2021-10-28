@@ -8,7 +8,7 @@ FROM buildpack-deps:buster
 
 # https://hub.docker.com/_/python/
 
-ENV PYTHON_VERSION 3.7.11
+ENV PYTHON_VERSION 3.7.12
 ENV PYTHON_PIP_VERSION 21.2.4
 
 
@@ -94,8 +94,8 @@ RUN cd /usr/local/bin \
 # https://hub.docker.com/_/node/
 
 
-ENV NODE_VERSION 16.6.2
-ENV YARN_VERSION 1.22.5
+ENV NODE_VERSION 16.13.0
+ENV YARN_VERSION 1.22.15
 
 RUN groupadd --gid 1000 node \
   && useradd --uid 1000 --gid node --shell /bin/bash --create-home node
@@ -133,8 +133,8 @@ RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-
 	  && for key in \
 	    6A010C5166006599AA17F08146C2130DFD2497F5 \
 	  ; do \
-            gpg --keyserver hkps://keys.openpgp.org --recv-keys "$key" || \
-            gpg --keyserver keyserver.ubuntu.com --recv-keys "$key" ; \
+	    gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys "$key" || \
+	    gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key" ; \
 	  done \
 	  && curl -fSL -o yarn.js "https://yarnpkg.com/downloads/$YARN_VERSION/yarn-legacy-$YARN_VERSION.js" \
 	  && curl -fSL -o yarn.js.asc "https://yarnpkg.com/downloads/$YARN_VERSION/yarn-legacy-$YARN_VERSION.js.asc" \
