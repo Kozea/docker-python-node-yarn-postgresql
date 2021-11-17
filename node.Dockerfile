@@ -47,9 +47,8 @@ RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-
 	  && for key in \
 	    6A010C5166006599AA17F08146C2130DFD2497F5 \
 	  ; do \
-        	gpg --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" || \
-        	gpg --keyserver hkp://ipv4.pool.sks-keyservers.net --recv-keys "$key" || \
-		gpg --keyserver hkp://pgp.mit.edu:80 --recv-keys "$key"; \
+        	gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys "$key" || \
+        	gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key" ; \
 	  done \
 	  && curl -fSL -o yarn.js "https://yarnpkg.com/downloads/$YARN_VERSION/yarn-legacy-$YARN_VERSION.js" \
 	  && curl -fSL -o yarn.js.asc "https://yarnpkg.com/downloads/$YARN_VERSION/yarn-legacy-$YARN_VERSION.js.asc" \
