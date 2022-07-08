@@ -22,6 +22,9 @@ services:
       # POSTGRES_PASSWORD: postgres
     volumes:
       - "psql-data:/var/lib/postgresql/12/main"
+      - ../x-files:/var/lib/postgresql/x-files
+      - ../gluttony:/var/lib/postgresql/gluttony
+      - ../mammoth/cip13:/var/lib/postgresql/gluttony/static/images/cip
   pgadmin4:
     image: dpage/pgadmin4
     environment:
