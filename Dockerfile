@@ -8,10 +8,6 @@ FROM buildpack-deps:buster
 
 # https://hub.docker.com/_/python/
 
-ENV PYTHON_VERSION 3.8.12
-ENV PYTHON_PIP_VERSION 21.2.4
-
-
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
 
@@ -20,69 +16,114 @@ ENV PATH /usr/local/bin:$PATH
 ENV LANG C.UTF-8
 
 # runtime dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-		tcl \
-		tk \
-	&& rm -rf /var/lib/apt/lists/*
+RUN set -eux; \
+	apt-get update; \
+	apt-get install -y --no-install-recommends \
+		libbluetooth-dev \
+		tk-dev \
+		uuid-dev \
+	; \
+	rm -rf /var/lib/apt/lists/*
 
 ENV GPG_KEY E3FF2839C048B25C084DEBE9B26995E310250568
-# if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
+ENV PYTHON_VERSION 3.8.16
 
-RUN set -ex \
-	&& buildDeps=' \
-        dpkg-dev \
-		tcl-dev \
-		tk-dev \
-	' \
-	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/* \
+RUN set -eux; \
 	\
-	&& wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz" \
-	&& wget -O python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc" \
-	&& export GNUPGHOME="$(mktemp -d)" \
-	&& gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys "$GPG_KEY" \
-	&& gpg --batch --verify python.tar.xz.asc python.tar.xz \
-	&& rm -r "$GNUPGHOME" python.tar.xz.asc \
-	&& mkdir -p /usr/src/python \
-	&& tar -xJC /usr/src/python --strip-components=1 -f python.tar.xz \
-	&& rm python.tar.xz \
+	wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz"; \
+	wget -O python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc"; \
+	GNUPGHOME="$(mktemp -d)"; export GNUPGHOME; \
+	gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys "$GPG_KEY"; \
+	gpg --batch --verify python.tar.xz.asc python.tar.xz; \
+	command -v gpgconf > /dev/null && gpgconf --kill all || :; \
+	rm -rf "$GNUPGHOME" python.tar.xz.asc; \
+	mkdir -p /usr/src/python; \
+	tar --extract --directory /usr/src/python --strip-components=1 --file python.tar.xz; \
+	rm python.tar.xz; \
 	\
-	&& cd /usr/src/python \
-	&& ./configure \
+	cd /usr/src/python; \
+	gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)"; \
+	./configure \
+		--build="$gnuArch" \
 		--enable-loadable-sqlite-extensions \
+		--enable-optimizations \
+		--enable-option-checking=fatal \
 		--enable-shared \
-	&& make -j$(nproc) \
-	&& make install \
-	&& ldconfig \
+		--with-system-expat \
+		--without-ensurepip \
+	; \
+	nproc="$(nproc)"; \
+	make -j "$nproc" \
+		"EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
+		"LDFLAGS=${LDFLAGS:-}" \
+		"PROFILE_TASK=${PROFILE_TASK:-}" \
+	; \
+# https://github.com/docker-library/python/issues/784
+# prevent accidental usage of a system installed libpython of the same version
+	rm python; \
+	make -j "$nproc" \
+		"EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
+		"LDFLAGS=${LDFLAGS:--Wl},-rpath='\$\$ORIGIN/../lib'" \
+		"PROFILE_TASK=${PROFILE_TASK:-}" \
+		python \
+	; \
+	make install; \
 	\
-# explicit path to "pip3" to ensure distribution-provided "pip3" cannot interfere
-	&& if [ ! -e /usr/local/bin/pip3 ]; then : \
-		&& wget -O /tmp/get-pip.py 'https://bootstrap.pypa.io/get-pip.py' \
-		&& python3 /tmp/get-pip.py "pip==$PYTHON_PIP_VERSION" \
-		&& rm /tmp/get-pip.py \
-	; fi \
-# we use "--force-reinstall" for the case where the version of pip we're trying to install is the same as the version bundled with Python
-# ("Requirement already up-to-date: pip==8.1.2 in /usr/local/lib/python3.6/site-packages")
-# https://github.com/docker-library/python/pull/143#issuecomment-241032683
-	&& pip3 install --no-cache-dir --upgrade --force-reinstall "pip==$PYTHON_PIP_VERSION" \
-# then we use "pip list" to ensure we don't have more than one pip version installed
-# https://github.com/docker-library/python/pull/100
-	&& [ "$(pip list |tac|tac| awk -F '[ ()]+' '$1 == "pip" { print $2; exit }')" = "$PYTHON_PIP_VERSION" ] \
+# enable GDB to load debugging data: https://github.com/docker-library/python/pull/701
+	bin="$(readlink -ve /usr/local/bin/python3)"; \
+	dir="$(dirname "$bin")"; \
+	mkdir -p "/usr/share/gdb/auto-load/$dir"; \
+	cp -vL Tools/gdb/libpython.py "/usr/share/gdb/auto-load/$bin-gdb.py"; \
 	\
-	&& find /usr/local -depth \
+	cd /; \
+	rm -rf /usr/src/python; \
+	\
+	find /usr/local -depth \
 		\( \
-			\( -type d -a -name test -o -name tests \) \
-			-o \
-			\( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
+			\( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
+			-o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name 'libpython*.a' \) \) \
+			-o \( -type f -a -name 'wininst-*.exe' \) \
 		\) -exec rm -rf '{}' + \
-	&& apt-get purge -y --auto-remove $buildDeps \
-	&& rm -rf /usr/src/python ~/.cache
+	; \
+	\
+	ldconfig; \
+	\
+	python3 --version
 
-# make some useful symlinks that are expected to exist
-RUN cd /usr/local/bin \
-	&& ln -s idle3 idle \
-	&& ln -s pydoc3 pydoc \
-	&& ln -s python3 python \
-	&& ln -s python3-config python-config
+# make some useful symlinks that are expected to exist ("/usr/local/bin/python" and friends)
+RUN set -eux; \
+	for src in idle3 pydoc3 python3 python3-config; do \
+		dst="$(echo "$src" | tr -d 3)"; \
+		[ -s "/usr/local/bin/$src" ]; \
+		[ ! -e "/usr/local/bin/$dst" ]; \
+		ln -svT "$src" "/usr/local/bin/$dst"; \
+	done
+
+# if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
+ENV PYTHON_PIP_VERSION 22.0.4
+# https://github.com/docker-library/python/issues/365
+ENV PYTHON_SETUPTOOLS_VERSION 57.5.0
+# https://github.com/pypa/get-pip
+ENV PYTHON_GET_PIP_URL https://github.com/pypa/get-pip/raw/d5cb0afaf23b8520f1bbcfed521017b4a95f5c01/public/get-pip.py
+ENV PYTHON_GET_PIP_SHA256 394be00f13fa1b9aaa47e911bdb59a09c3b2986472130f30aa0bfaf7f3980637
+
+RUN set -eux; \
+	\
+	wget -O get-pip.py "$PYTHON_GET_PIP_URL"; \
+	echo "$PYTHON_GET_PIP_SHA256 *get-pip.py" | sha256sum -c -; \
+	\
+	export PYTHONDONTWRITEBYTECODE=1; \
+	\
+	python get-pip.py \
+		--disable-pip-version-check \
+		--no-cache-dir \
+		--no-compile \
+		"pip==$PYTHON_PIP_VERSION" \
+		"setuptools==$PYTHON_SETUPTOOLS_VERSION" \
+	; \
+	rm -f get-pip.py; \
+	\
+	pip --version
 
 
 # ███    ██  ██████  ██████  ███████
