@@ -351,7 +351,8 @@ RUN set -ex; \
 	esac; \
 	\
 	apt-get install -y --no-install-recommends postgresql-common; \
-	sed -ri 's/#(create_main_cluster) .*$/\1 = false/' /etc/postgresql-common/createcluster.conf; \
+	# Do not prevent data cluster creation
+	#sed -ri 's/#(create_main_cluster) .*$/\1 = false/' /etc/postgresql-common/createcluster.conf; \
 	apt-get install -y --no-install-recommends \
 		"postgresql-$PG_MAJOR=$PG_VERSION" \
 	; \
