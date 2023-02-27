@@ -1,2 +1,2 @@
 build: Dockerfile
-	docker build -t kozea/docker-python-node-yarn-postgresql:bullseye .
+	docker build -t kozea/python-node-yarn-postgresql:bullseye .
