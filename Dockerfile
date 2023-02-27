@@ -399,7 +399,8 @@ ENV MULTICORN_VERSION 1.4.0
 
 
 RUN apt-get update \
-		&& apt-get install -y --no-install-recommends postgresql-server-dev-$PG_MAJOR unzip \
+		&& apt-get install -y --no-install-recommends \
+		  postgresql-server-dev-$PG_MAJOR python3-dev python3-lxml python3-setuptools unzip \
 		&& curl -SLO "https://github.com/Segfault-Inc/Multicorn/archive/v$MULTICORN_VERSION.zip" \
 		&& mkdir -p /usr/src/multicorn \
 		&& unzip v$MULTICORN_VERSION.zip -d /usr/src/multicorn \
@@ -413,8 +414,5 @@ RUN apt-get update \
 		&& cd \
 		&& apt-get purge -y --auto-remove unzip
 
-
-###### Bonus virtualenv, lxml/docutils and pipenv
-RUN pip install "virtualenv<20.0.0" lxml docutils pipenv
 
 CMD ["bash"]
