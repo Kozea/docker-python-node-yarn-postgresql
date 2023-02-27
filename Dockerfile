@@ -408,8 +408,8 @@ RUN apt-get update \
 		&& cd /usr/src/multicorn/Multicorn-$MULTICORN_VERSION \
 		&& sed -e "s/install: python_code//" -i Makefile \
 		&& sed -e "s/all: preflight-check/all: /" -i Makefile \
-		&& env PYTHON_OVERRIDE=/usr/local/bin/python make \
-		&& env PYTHON_OVERRIDE=/usr/local/bin/python make install \
+		&& make \
+		&& make install \
 		&& rm -fr /usr/src/multicorn \
 		&& cd \
 		&& apt-get purge -y --auto-remove unzip
