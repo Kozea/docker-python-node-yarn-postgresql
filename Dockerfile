@@ -395,16 +395,16 @@ RUN mkdir -p "$PGDATA" && chown -R postgres:postgres "$PGDATA" && chmod 777 "$PG
 # ██      ██  ██████  ███████ ██    ██  ██████  ██████  ██   ██ ██   ████
 
 
-ENV MULTICORN_VERSION 1.3.4
+ENV MULTICORN_VERSION 1.4.0
 
 
 RUN apt-get update \
 		&& apt-get install -y --no-install-recommends postgresql-server-dev-$PG_MAJOR unzip \
-		&& curl -SLO "https://github.com/Segfault-Inc/Multicorn/archive/master.zip" \
+		&& curl -SLO "https://github.com/Segfault-Inc/Multicorn/archive/v$MULTICORN_VERSION.zip" \
 		&& mkdir -p /usr/src/multicorn \
-		&& unzip master.zip -d /usr/src/multicorn \
-		&& rm -fr master.zip \
-		&& cd /usr/src/multicorn/Multicorn-master \
+		&& unzip v$MULTICORN_VERSION.zip -d /usr/src/multicorn \
+		&& rm -fr v$MULTICORN_VERSION.zip \
+		&& cd /usr/src/multicorn/Multicorn-$MULTICORN_VERSION \
 		&& sed -e "s/install: python_code//" -i Makefile \
 		&& sed -e "s/all: preflight-check/all: /" -i Makefile \
 		&& env PYTHON_OVERRIDE=/usr/local/bin/python make \
