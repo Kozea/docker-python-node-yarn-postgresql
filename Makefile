@@ -1,5 +1,7 @@
+IMAGE_NAME ?= kozea/python-node-yarn-postgresql:bullseye
+
 build: Dockerfile
-	docker build -t kozea/python-node-yarn-postgresql:bullseye .
+	docker build -t $(IMAGE_NAME) .
 
 publish: build
-	docker push kozea/python-node-yarn-postgresql:bullseye
+	docker push $(IMAGE_NAME)
