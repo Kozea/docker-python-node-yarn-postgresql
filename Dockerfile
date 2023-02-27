@@ -406,7 +406,6 @@ RUN apt-get update \
 		&& unzip v$MULTICORN_VERSION.zip -d /usr/src/multicorn \
 		&& rm -fr v$MULTICORN_VERSION.zip \
 		&& cd /usr/src/multicorn/Multicorn-$MULTICORN_VERSION \
-		&& sed -e "s/install: python_code//" -i Makefile \
 		&& sed -e "s/all: preflight-check/all: /" -i Makefile \
 		&& make \
 		&& make install \
