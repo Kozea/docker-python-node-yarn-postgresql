@@ -218,8 +218,6 @@ RUN set -ex; \
 
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
 
-RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main' $PG_MAJOR > /etc/apt/sources.list.d/pgdg.list
-
 # postgresql-contrib isn't already available for postgresql 10
 # RUN apt-get update \
 #	&& apt-get install -y postgresql-server-dev-all postgresql-common \
